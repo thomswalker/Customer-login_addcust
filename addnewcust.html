@@ -1,0 +1,135 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add New Customer</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        #customer-form {
+            width: 800px;
+            border: 1px solid #ccc;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        input {
+            width: 40%;
+            padding: 10px;
+            margin-bottom: 16px;
+            margin-right: 77px;
+            box-sizing: border-box;
+        }
+
+        button {
+            background-color: #4caf50;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        .success-message {
+            color: #008000;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div id="customer-form">
+        <h2>Add New Customer</h2>
+
+        <input type="text" id="first_name" placeholder="Enter First Name" required>
+
+        <input type="text" id="last_name" placeholder="Enter Last Name" required>
+
+        <input type="text" id="street_address" placeholder="Enter Street">
+
+        <input type="text" id="address" placeholder="Enter Address">
+
+        <input type="text" id="city" placeholder="Enter City">
+
+        <input type="text" id="state" placeholder="Enter State">
+
+        <input type="email" id="email" placeholder="Enter Email">
+
+        <input type="tel" id="phone" placeholder="Enter Phone Number">
+         
+        <a href="custlist.html"><button onclick="addCustomer()">Add Customer</button></a>
+        <p class="success-message" id="successMessage"></p>
+    </div>
+
+    <script>
+        function addCustomer() {
+            // Retrieve values from form fields
+            var firstName = document.getElementById("first_name").value;
+            var lastName = document.getElementById("last_name").value;
+            var streetAddress = document.getElementById("street_address").value;
+            var city = document.getElementById("city").value;
+            var state = document.getElementById("state").value;
+            var email = document.getElementById("email").value;
+            var phone = document.getElementById("phone").value;
+
+            // Create a new customer object
+            var newCustomer = {
+                "first_name": firstName,
+                "last_name": lastName,
+                "street": streetAddress,
+                "address": document.getElementById("address").value,
+                "city": city,
+                "state": state,
+                "email": email,
+                "phone": phone
+            };
+
+            // Retrieve existing customers from localStorage
+            var existingCustomers = JSON.parse(localStorage.getItem("customers")) || [];
+
+            // Add the new customer to the existing list
+            existingCustomers.push(newCustomer);
+
+            // Save the updated customer list back to localStorage
+            localStorage.setItem("customers", JSON.stringify(existingCustomers));
+
+            // Display success message
+            var successMessageElement = document.getElementById("successMessage");
+            successMessageElement.textContent = "Success: 201, Successfully Created";
+            successMessageElement.style.display = "block";
+
+            // Clear form fields after successful creation
+            clearFormFields();
+        }
+
+        function clearFormFields() {
+            document.getElementById("first_name").value = "";
+            document.getElementById("last_name").value = "";
+            document.getElementById("street_address").value = "";
+            document.getElementById("address").value = "";
+            document.getElementById("city").value = "";
+            document.getElementById("state").value = "";
+            document.getElementById("email").value = "";
+            document.getElementById("phone").value = "";
+        }
+    </script>
+
+</body>
+
+</html>

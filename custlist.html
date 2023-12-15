@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Customer List</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        #customer-table {
+            border-collapse: collapse;
+            width: 100%;
+            margin-top: 20px;
+        }
+
+        #customer-table th,
+        #customer-table td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+
+        #customer-table th {
+            background-color: #4caf50;
+            color: black;
+        }
+
+        button {
+            background-color: #4caf50;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .edit-btn,
+        .delete-btn {
+            background-color: #2196F3;
+            color: white;
+            border: none;
+            padding: 6px 10px;
+            border-radius: 3px;
+            cursor: pointer;
+            margin-right: 10px;
+            /* Increased margin for more space */
+        }
+
+        .delete-btn {
+            background-color: #f90303;
+            /* Red color for delete button */
+        }
+
+        #edit-modal {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: rgba(0, 0, 0, 0.5);
+            padding: 20px;
+            z-index: 2;
+            height: 500px;
+            width: 80%;
+            max-width: 600px;
+            overflow-y: auto;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+            color: blue;
+        }
+
+        #edit-modal-content {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+        }
+
+        #edit-modal label {
+            display: block;
+            margin-bottom: 8px;
+        }
+
+        #edit-modal input {
+            width: calc(100% - 16px);
+            padding: 8px;
+            margin-bottom: 16px;
+            box-sizing: border-box;
+        }
+
+        #edit-modal button {
+            background-color: #4caf50;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-right: 10px;
+        }
+
+        #edit-modal button.close-btn {
+            background-color: #f44336;
+        }
+
+        /* Media queries for responsiveness */
+        @media only screen and (max-width: 600px) {
+
+            #customer-table th,
+            #customer-table td {
+                display: block;
+                width: 100%;
+                box-sizing: border-box;
+            }
+
+            #customer-table th {
+                text-align: center;
+            }
+
+            #customer-table th:first-child,
+            #customer-table td:first-child {
+                display: none;
+            }
+
+            #customer-table th:nth-child(9),
+            #customer-table td:nth-child(9) {
+                text-align: center;
+            }
+
+            .edit-btn,
+            .delete-btn {
+                width: 100%;
+                margin-bottom: 5px;
+            }
+
+            #edit-modal {
+                width: 100%;
+                max-width: none;
+                /* Remove max-width for smaller screens */
+            }
+
+            /* Improved heading visibility */
+            #customer-table th:first-child span {
+                display: inline-block;
+                width: 100%;
+            }
+
+            #customer-table th:first-child span button {
+                float: right;
+            }
+        }
+    </style>
+
+</head>
+
+<body>
+    <table id="customer-table" style="width: 90%; margin: auto; border-collapse: collapse;">
+        <thead>
+            <tr>
+                <th colspan="9" style="text-align: center; background-color: lightblue;">
+                    <span>
+                        <h1 style="margin: 0;">Customer List</h1>
+                        <a href="addnewcust.html">
+                            <button onclick="addCustomer()">Add Customer</button>
+                        </a>
+                    </span>
+                </th>
+            </tr>
+            <tr>
+                <th style="padding: 8px; text-align: left;">First Name</th>
+                <th style="padding: 8px; text-align: left;">Last Name</th>
+                <th style="padding: 8px; text-align: left;">Street</th>
+                <th style="padding: 8px; text-align: left;">Address</th>
+                <th style="padding: 8px; text-align: left;">City</th>
+                <th style="padding: 8px; text-align: left;">State</th>
+                <th style="padding: 8px; text-align: left;">Email</th>
+                <th style="padding: 8px; text-align: left;">Phone</th>
+                <th style="padding: 8px; text-align: left;">Action</th>
+            </tr>
+        </thead>
+        <tbody id="customer-table-body"></tbody>
+    </table>
+
+    <!-- Modal for editing customer -->
+    <div id="edit-modal">
+        <div id="edit-modal-content">
+            <h2>Edit Customer</h2>
+            <label for="editFirstName">First Name:</label>
+            <input type="text" id="editFirstName">
+            <label for="editLastName">Last Name:</label>
+            <input type="text" id="editLastName">
+            <label for="editStreet">Street:</label>
+            <input type="text" id="editStreet">
+            <label for="editAddress">Address:</label>
+            <input type="text" id="editAddress">
+            <label for="editCity">City:</label>
+            <input type="text" id="editCity">
+            <label for="editState">State:</label>
+            <input type="text" id="editState">
+            <label for="editEmail">Email:</label>
+            <input type="email" id="editEmail">
+            <label for="editPhone">Phone:</label>
+            <input type="tel" id="editPhone">
+            <button onclick="saveEdit()">Save</button>
+            <button class="close-btn" onclick="closeEditModal()">Close</button>
+        </div>
+    </div>
+
+    <script>
+        // Function to display customers in the table
+        function displayCustomers() {
+            var customerTableBody = document.getElementById("customer-table-body");
+            customerTableBody.innerHTML = "";
+
+            // Retrieve customers from localStorage
+            var customers = JSON.parse(localStorage.getItem("customers")) || [];
+
+            for (var i = 0; i < customers.length; i++) {
+                var customer = customers[i];
+
+                var newRow = customerTableBody.insertRow();
+                newRow.insertCell(0).textContent = customer.first_name;
+                newRow.insertCell(1).textContent = customer.last_name;
+                newRow.insertCell(2).textContent = customer.street;
+                newRow.insertCell(3).textContent = customer.address;
+                newRow.insertCell(4).textContent = customer.city;
+                newRow.insertCell(5).textContent = customer.state;
+                newRow.insertCell(6).textContent = customer.email;
+                newRow.insertCell(7).textContent = customer.phone;
+
+                // Add action buttons
+                var actionCell = newRow.insertCell(8);
+                var editButton = document.createElement("button");
+                editButton.className = "edit-btn";
+                editButton.textContent = "Edit";
+                editButton.onclick = function (index) {
+                    return function () {
+                        openEditModal(index);
+                    };
+                }(i);
+                actionCell.appendChild(editButton);
+
+                var deleteButton = document.createElement("button");
+                deleteButton.className = "delete-btn";
+                deleteButton.textContent = "Delete";
+                deleteButton.onclick = function (index) {
+                    return function () {
+                        deleteCustomer(index);
+                    };
+                }(i);
+                actionCell.appendChild(deleteButton);
+            }
+        }
+
+        // Function to open the edit modal
+        function openEditModal(index) {
+            var customers = JSON.parse(localStorage.getItem("customers")) || [];
+            var customer = customers[index];
+            document.getElementById("editFirstName").value = customer.first_name;
+            document.getElementById("editLastName").value = customer.last_name;
+            document.getElementById("editStreet").value = customer.street;
+            document.getElementById("editAddress").value = customer.address;
+            document.getElementById("editCity").value = customer.city;
+            document.getElementById("editState").value = customer.state;
+            document.getElementById("editEmail").value = customer.email;
+            document.getElementById("editPhone").value = customer.phone;
+
+            document.getElementById("edit-modal").style.display = "block";
+            document.body.style.overflow = "hidden"; // Disable scrolling
+        }
+
+        // Function to close the edit modal
+        function closeEditModal() {
+            document.getElementById("edit-modal").style.display = "none";
+            document.body.style.overflow = "auto"; // Enable scrolling
+        }
+
+        // Function to save edited customer data
+        function saveEdit() {
+            var index = 0; // Assuming you are editing the first customer for simplicity
+            var customers = JSON.parse(localStorage.getItem("customers")) || [];
+            customers[index].first_name = document.getElementById("editFirstName").value;
+            customers[index].last_name = document.getElementById("editLastName").value;
+            customers[index].street = document.getElementById("editStreet").value;
+            customers[index].address = document.getElementById("editAddress").value;
+            customers[index].city = document.getElementById("editCity").value;
+            customers[index].state = document.getElementById("editState").value;
+            customers[index].email = document.getElementById("editEmail").value;
+            customers[index].phone = document.getElementById("editPhone").value;
+
+            // Save the updated customer list back to localStorage
+            localStorage.setItem("customers", JSON.stringify(customers));
+
+            displayCustomers(); // Update the table with edited data
+            closeEditModal(); // Close the edit modal
+
+            // Display success message
+            alert("Successfully Updated");
+        }
+
+        // Function to delete a customer
+        function deleteCustomer(index) {
+            var customers = JSON.parse(localStorage.getItem("customers")) || [];
+            customers.splice(index, 1);
+
+            // Save the updated customer list back to localStorage
+            localStorage.setItem("customers", JSON.stringify(customers));
+
+            displayCustomers(); // Update the table after deletion
+
+            // Display success message
+            alert("Successfully deleted");
+        }
+
+        // Initial display of customers
+
+
+        // Initial display of customers
+        displayCustomers();
+    </script>
+
+</body>
+
+</html>

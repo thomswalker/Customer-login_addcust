@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login Form</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        #login-form {
+            width: 80%;
+            max-width: 400px; /* Set a maximum width for the form */
+            border: 1px solid #ccc;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+        }
+
+        input {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 16px;
+            box-sizing: border-box;
+        }
+
+        button {
+            background-color: #4caf50;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            width: 40%; /* Make the button full width */
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        /* Media queries for responsiveness */
+        @media only screen and (max-width: 600px) {
+            #login-form {
+                max-width: none; /* Remove max-width for smaller screens */
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div id="login-form">
+        <h2>Login</h2>
+        <label for="login_id">Email:</label>
+        <input type="text" id="login_id" placeholder="Enter your email">
+
+        <label for="password">Password:</label>
+        <input type="password" id="password" placeholder="Enter your password">
+
+        <button onclick="validateLogin()">Login</button>
+    </div>
+
+    <script>
+        function validateLogin() {
+            var loginId = document.getElementById("login_id").value;
+            var password = document.getElementById("password").value;
+
+            // Check if the login credentials match
+            if (loginId === "test@sunbasedata.com" && password === "Test@123") {
+                alert("Login successful!");
+                // Redirect to the addnewcust.html page
+                window.location.href = "addnewcust.html";
+            } else {
+                alert("Invalid login credentials. Redirecting to another page.");
+                // Redirect to the specified URL for unsuccessful login
+                window.location.href = "https://qa2.sunbasedata.com/sunbase/portal/api/assignment_auth.jsp";
+            }
+        }
+    </script>
+</body>
+
+</html>
